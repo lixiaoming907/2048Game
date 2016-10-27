@@ -19,6 +19,8 @@ public class CardsController : MonoBehaviour
 
     private bool canMove = false;
 
+    private Vector2 touchDeltaPosition;
+
     private DatasController datas;
 
     private CardItem[,] items = new CardItem[4, 4];
@@ -105,27 +107,35 @@ public class CardsController : MonoBehaviour
 
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
             {
-                Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
+                touchDeltaPosition = Input.GetTouch(0).deltaPosition;
+            }
+
+            if (Input.GetTouch(0).phase == TouchPhase.Ended)
+            {
                 if (Mathf.Abs(touchDeltaPosition.x) > Mathf.Abs(touchDeltaPosition.y) && touchDeltaPosition.x < 0)
                 {
                     canMove = false;
                     MoveToLeft();
                 }
-                else if (Mathf.Abs(touchDeltaPosition.x) > Mathf.Abs(touchDeltaPosition.y) && touchDeltaPosition.x > 0)
+                else if (Mathf.Abs(touchDeltaPosition.x) > Mathf.Abs(touchDeltaPosition.y) &&
+                         touchDeltaPosition.x > 0)
                 {
                     canMove = false;
                     MoveToRight();
                 }
-                else if (Mathf.Abs(touchDeltaPosition.x) < Mathf.Abs(touchDeltaPosition.y) && touchDeltaPosition.y < 0)
+                else if (Mathf.Abs(touchDeltaPosition.x) < Mathf.Abs(touchDeltaPosition.y) &&
+                         touchDeltaPosition.y < 0)
                 {
                     canMove = false;
                     MoveToButtom();
                 }
-                else if (Mathf.Abs(touchDeltaPosition.x) < Mathf.Abs(touchDeltaPosition.y) && touchDeltaPosition.y > 0)
+                else if (Mathf.Abs(touchDeltaPosition.x) < Mathf.Abs(touchDeltaPosition.y) &&
+                         touchDeltaPosition.y > 0)
                 {
                     canMove = false;
                     MoveToUp();
                 }
+                touchDeltaPosition = new Vector2(0, 0);
             }
         }
     }
