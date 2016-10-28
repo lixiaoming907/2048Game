@@ -93,7 +93,7 @@ public class CardsController : MonoBehaviour
     {
         if (canMove)
         {
-#if UNITY_EDITOR || UNITY_5_3_OR_NEWER
+#if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.W))
             {
                 canMove = false;
