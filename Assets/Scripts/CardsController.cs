@@ -11,6 +11,7 @@ public class CardsController : MonoBehaviour
     public GameObject Panel;
 
     public GameObject winPanel;
+    public GameObject losePanel;
 
     public Transform[] oneRowCards;
     public Transform[] towRowCards;
@@ -33,7 +34,14 @@ public class CardsController : MonoBehaviour
     {
         _instance = this;
         datas = new DatasController();
+        datas.loser = onLose;
     }
+
+    private void onLose()
+    {
+        losePanel.SetActive(true);
+    }
+
 
     //重新初始化游戏
     public void ResetGame()
@@ -54,6 +62,7 @@ public class CardsController : MonoBehaviour
         destroyCardsIndexList.Clear();
         moveCardsIndexList.Clear();
         winPanel.SetActive(false);
+        losePanel.SetActive(false);
         Start();
     }
 
@@ -84,6 +93,7 @@ public class CardsController : MonoBehaviour
     {
         if (canMove)
         {
+#if UNITY_EDITOR || UNITY_5_3_OR_NEWER
             if (Input.GetKeyDown(KeyCode.W))
             {
                 canMove = false;
@@ -105,6 +115,7 @@ public class CardsController : MonoBehaviour
                 MoveToLeft();
             }
 
+#elif UNITY_ANDROID
             if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
             {
                 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
@@ -137,6 +148,7 @@ public class CardsController : MonoBehaviour
                 }
                 touchDeltaPosition = new Vector2(0, 0);
             }
+#endif
         }
     }
 

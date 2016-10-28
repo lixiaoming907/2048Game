@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 public class DatasController
 {
+
+    public delegate void Loser();
+
+    public Loser loser;
+
+
     int[,] intValue = new int[4, 4];
 
     private int tabIndex = 0;
@@ -23,6 +29,8 @@ public class DatasController
         intValue[row, col] = 2;
 
         CardChange cardChange = new CardChange(-1, -1, -1, -1, row, col, -1, -1, intValue[row, col]);
+        //检查是否输了
+        CheckLose();
         return cardChange;
     }
 
@@ -292,5 +300,67 @@ public class DatasController
                 intValue[i, j] = 0;
             }
         }
+    }
+
+    void CheckLose()
+    {
+        int lastValue = 0;
+        for (int i = 0; i < 4; i++)
+        {
+            lastValue = 0;
+
+            for (int j = 0; j < 4; j++)
+            {
+                if (intValue[i, j] == 0)
+                {
+                    return;
+                }
+                else if (j == 0)
+                {
+                    lastValue = intValue[i, j];
+                }
+                else
+                {
+                    if (lastValue == intValue[i, j])
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        lastValue = intValue[i, j];
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            lastValue = 0;
+
+            for (int j = 0; j < 4; j++)
+            {
+                if (intValue[j, i] == 0)
+                {
+                    return;
+                }
+                else if (j == 0)
+                {
+                    lastValue = intValue[j, i];
+                }
+                else
+                {
+                    if (lastValue == intValue[j, i])
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        lastValue = intValue[j, i];
+                    }
+                }
+            }
+        }
+        //输了
+        loser();
     }
 }
