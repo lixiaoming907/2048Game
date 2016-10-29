@@ -7,10 +7,12 @@ public class CardItem : MonoBehaviour
 
     public Vector3 _targetPos;
 
-    public float moveSpeed = 3;
+    private  float moveSpeed = 3;
     private float needScend = 0.1f;
 
     public Text text;
+    [HideInInspector]
+    public int cardNum;
 
     // Use this for initialization
     void Start()
@@ -25,6 +27,7 @@ public class CardItem : MonoBehaviour
         {
             text.text = value.ToString();
         }
+        cardNum = value;
     }
 
     public void SetMoveValue(Vector3 targetPos)

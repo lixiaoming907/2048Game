@@ -30,6 +30,8 @@ public class CardsController : MonoBehaviour
     private List<CardChange> destroyCardsIndexList = new List<CardChange>();
     private List<CardChange> moveCardsIndexList = new List<CardChange>();
 
+    private List<CardItem> cardItemList = new List<CardItem>(); 
+
     void Awake()
     {
         _instance = this;
@@ -53,7 +55,7 @@ public class CardsController : MonoBehaviour
             {
                 if (items[i, j] != null)
                 {
-                    Destroy(items[i, j].gameObject);
+                    DestroyCardItem(items[i, j]);
                     items[i, j] = null;
                 }
             }
@@ -63,6 +65,7 @@ public class CardsController : MonoBehaviour
         moveCardsIndexList.Clear();
         winPanel.SetActive(false);
         losePanel.SetActive(false);
+        ScoreController._instance.ResetScore();
         Start();
     }
 
@@ -183,6 +186,9 @@ public class CardsController : MonoBehaviour
             canMove = true;
             return;
         }
+
+        int totleScore = 0;
+
         for (int i = 0; i < moveCardsIndexList.Count; i++)
         {
             int froX = moveCardsIndexList[i].fromIndexX;
@@ -193,10 +199,11 @@ public class CardsController : MonoBehaviour
 
             if (crNum != 0)
             {
-                Destroy(items[toX, toY].gameObject);
+                DestroyCardItem(items[toX, toY]);
                 CardChange change = new CardChange(-1, -1, -1, -1, toX, toY, toX, toY, crNum);
                 destroyCardsIndexList.Add(change);
                 createCardsIndexList.Add(change);
+                totleScore += crNum;
             }
 
             switch (toX)
@@ -219,6 +226,11 @@ public class CardsController : MonoBehaviour
             items[froX, froY] = null;
 
         }
+        //加分
+        if (totleScore != 0)
+        {
+            ScoreController._instance.AddScore(totleScore);
+        }
         moveCardsIndexList.Clear();
         StartCoroutine(TestNest());
     }
@@ -236,11 +248,34 @@ public class CardsController : MonoBehaviour
         {
             int x = destroyCardsIndexList[i].desIndexX;
             int y = destroyCardsIndexList[i].desIndexY;
-            Destroy(items[x, y].gameObject);
+            DestroyCardItem(items[x, y]);
             items[x, y] = null;
         }
         destroyCardsIndexList.Clear();
         CreateCards(1);
+    }
+
+    GameObject CheckCardItem(int needNum)
+    {
+        GameObject needObject;
+        for (int i = 0; i < cardItemList.Count; i++)
+        {
+            if (cardItemList[i].cardNum == needNum)
+            {
+                needObject = cardItemList[i].gameObject;
+                needObject.gameObject.SetActive(true);
+                cardItemList.Remove(cardItemList[i]);
+                return needObject;
+            }
+        }
+        needObject = Instantiate(Resources.Load(needNum.ToString())) as GameObject;
+        return needObject;
+    }
+
+    void DestroyCardItem(CardItem item)
+    {
+        item.gameObject.SetActive(false);
+        cardItemList.Add(item);
     }
 
     //生成卡片
@@ -251,7 +286,7 @@ public class CardsController : MonoBehaviour
         {
             int x = createCardsIndexList[i].createIndexX;
             int y = createCardsIndexList[i].createIndexY;
-            GameObject card = Instantiate(Resources.Load(createCardsIndexList[i].createNum.ToString())) as GameObject;
+            GameObject card = CheckCardItem(createCardsIndexList[i].createNum);
             card.transform.SetParent(Panel.transform);
             card.GetComponent<CardItem>().SetValue(createCardsIndexList[i].createNum);
             if (createCardsIndexList[i].createNum == 2048)

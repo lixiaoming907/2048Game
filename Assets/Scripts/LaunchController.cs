@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 public class LaunchController : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
-	
+	void Start ()
+	{
+	    Application.targetFrameRate = 60;
 	}
 	
 	// Update is called once per frame
