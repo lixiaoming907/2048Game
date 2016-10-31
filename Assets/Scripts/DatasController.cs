@@ -28,7 +28,7 @@ public class DatasController
         }
 
 
-        intValue[row, col] = Random.Range(0f, 1f) > 0.8f ? 4 : 2;
+        intValue[row, col] = Random.Range(0f, 1f) > 0.9f ? 4 : 2;
 
         CardChange cardChange = new CardChange(-1, -1, -1, -1, row, col, -1, -1, intValue[row, col]);
         //检查是否输了
